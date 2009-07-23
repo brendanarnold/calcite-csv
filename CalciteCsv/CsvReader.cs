@@ -11,7 +11,7 @@ namespace CalciteCsv
         // TODO: Deal with blank lines and lines with whitespace only
 
         /// <summary>
-        /// The CsvSpec assed when the reader was generated
+        /// The CsvSpec passed when the reader was generated
         /// </summary>
         public CsvSpec Spec = new CsvSpec();
         private TextReader Stream;
@@ -37,11 +37,40 @@ namespace CalciteCsv
         private List<string> _ColumnsCache = new List<string>();
         private bool _IsDoublesConverted = false;
         private List<double> _ColumnsAsDoublesCache = new List<double>();
+        private string _CsvString = String.Empty;
 
-        public CsvReader(TextReader stream, CsvSpec spec)
+        /// <summary>
+        /// Create a CsvReader instance given a string of csv data from the
+        /// clipboard for example and a CsvSpec instance
+        /// </summary>
+        /// <param name="csvString">A string of CSV data (incl. newlines etc)</param>
+        /// <param name="spec">An instance of CsvSpec</param>
+        public CsvReader(string csvString, CsvSpec spec)
         {
+            this._CsvString = csvString;
+            TextReader stringStream = new StringReader(csvString);
+            this.Stream = stringStream;
             this.Spec = spec;
+            this.InitialiseCsvReader();
+        }
+
+        /// <summary>
+        /// Create a CsvReader instance given an instance of StreamReader and 
+        /// a CsvSpec instance
+        /// </summary>
+        /// <param name="stream">A StreamReader instance</param>
+        /// <param name="spec">An instance of CsvSpec</param>
+        public CsvReader(TextReader stream, CsvSpec spec) 
+        {
             this.Stream = stream;
+            this.Spec = spec;
+            this.InitialiseCsvReader();
+        }
+
+        private void InitialiseCsvReader()
+        {
+            int i;
+
             if (this.Spec.Headers.Count > 0 && this.Spec.HeaderRow < 0)
             {
                 this.Headers = this.Spec.Headers;
@@ -55,27 +84,47 @@ namespace CalciteCsv
             {
                 string lineBuffer = String.Empty;
                 int stopLine = System.Math.Max(this.Spec.HeaderRow, this.Spec.UnitsRow);
-                for (this.FileLineCount = 1; this.FileLineCount <= stopLine; this.FileLineCount++)
+                for (i = 1; i <= stopLine; i++)
                 {
                     lineBuffer = this.Stream.ReadLine();
-                    if (this.FileLineCount == this.Spec.HeaderRow)
+                    if (i == this.Spec.HeaderRow)
                     {
                         this.Headers = this.SplitLine(lineBuffer);
                     }
-                    if (this.FileLineCount == this.Spec.UnitsRow)
+                    if (i == this.Spec.UnitsRow)
                     {
                         this.Units = this.SplitLine(lineBuffer);
                     }
                 }
             }
             
-            // Parse the SkipRowsFormat to get a list of integers - porbably should use 
+            // Parse the SkipRowsFormat to get a list of integers - probably should use 
             // something more intelligent than this
             if (this.Spec.RowsToSkip.Count < 1 && this.Spec.RowsToSkipFormat.Length > 0)
             {
                 this.Spec.RowsToSkip = CalciteCsv.Helpers.ParseRangeFormat(this.Spec.RowsToSkipFormat);
             }
+
+            // Set the buffer back to the start
+            this.Reset();
                         
+        }
+
+        private void Reset()
+        // TODO: Test this!
+        {
+            if (this.Stream is StringReader)
+            {
+                TextReader stringStream = new StringReader(this._CsvString);
+                this.Stream = stringStream;
+            }
+            else if (this.Stream is StreamReader)
+            {
+                StreamReader stream = this.Stream as StreamReader;
+                stream.BaseStream.Position = 0;
+                stream.DiscardBufferedData();
+                this.Stream = stream as TextReader;
+            }
         }
 
         /// <summary>
@@ -166,104 +215,114 @@ namespace CalciteCsv
         /// <returns>List of strings</returns>
         internal List<string> SplitLine(string line)
         {
-            // TODO: Handle fixed width formats
+            
             int i;
             bool inQuotes = false;
             bool ignoreNext = true;
-            // Most times will not require parsing of this special strings
-            if (line.Contains(this.Spec.EscapeString)
-                || line.Contains(this.Spec.CommentString)
-                || line.Contains(this.Spec.QuoteString))
+            if (this.Spec.IsFixedWidth == true && this.Spec.FixedWidthFormat != String.Empty)
             {
-                List<char> elementBuffer = new List<char>();
-                List<string> lineElements = new List<string>();
-                // Cache the lengths to avoid overhead each time
-                int lenEscapeString = this.Spec.EscapeString.Length;
-                int lenQuoteString = this.Spec.QuoteString.Length;
-                int lenColumnDelimiter = this.Spec.ColumnDelimiter.Length;
-                int lenCommentString = this.Spec.CommentString.Length;
-
-                // Iterate char by char of the string
-                for (i = 0; i < line.Length; ++i)
-                {
-                    // First test for escape sequence ...
-                    if (line.Substring(i, lenEscapeString) == this.Spec.EscapeString)
-                    {
-                        if (ignoreNext == false)
-                        {
-                            ignoreNext = true;
-                            // Advance past the sequence
-                            i = i + lenEscapeString;
-                        }
-                        else
-                        {
-                            elementBuffer.Add(line[i]);
-                            ignoreNext = false;
-                        }
-                    } 
-                    // .. then for the quote sequence ...
-                    else if (line.Substring(i, lenQuoteString) == this.Spec.QuoteString)
-                    {
-                        if (ignoreNext == false)
-                        {
-                            // Toggle the quotes (why isn't .Toggle() a bool method?)
-                            if (inQuotes == true) {
-                                inQuotes = false;
-                            } else {
-                                inQuotes = true;
-                            }
-                            i = i + lenQuoteString;
-                        }
-                        else
-                        {
-                            elementBuffer.Add(line[i]);
-                            ignoreNext = false; 
-                        }
-                        
-                    }
-                    // ... then for comment sequence ...
-                    else if (line.Substring(i, lenCommentString) == this.Spec.CommentString)
-                    {
-                        if (ignoreNext == false && inQuotes == false)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            elementBuffer.Add(line[i]);
-                            ignoreNext = false;
-                        }
-                    }
-                    // .. then for column delimiters ...
-                    else if (line.Substring(i, lenColumnDelimiter) == this.Spec.ColumnDelimiter)
-                    {
-                        if (ignoreNext == false && inQuotes == false)
-                        {
-                            lineElements.Add(new string(elementBuffer.ToArray<char>()));
-                            elementBuffer.Clear();
-                            i = i + lenColumnDelimiter;
-                        }
-                        else 
-                        {
-                            elementBuffer.Add(line[i]);
-                            ignoreNext = false;
-                        }
-                        
-                    }
-                    // .. finally since it is not special, add the character to the buffer
-                    else
-                    {
-                        elementBuffer.Add(line[i]);
-                        ignoreNext = false;
-                    }
-                    
-                }
-                return lineElements.ToList<string>();
+                // TODO: Handle fixed width formats
             }
-            // bypass all of the above for a quicker(?) route
             else
             {
-                return line.Split(new string[]{this.Spec.ColumnDelimiter}, StringSplitOptions.None).ToList<string>();
+                // Most times will not require parsing of this special strings
+                if (line.Contains(this.Spec.EscapeString)
+                    || line.Contains(this.Spec.CommentString)
+                    || line.Contains(this.Spec.QuoteString))
+                {
+                    List<char> elementBuffer = new List<char>();
+                    List<string> lineElements = new List<string>();
+                    // Cache the lengths to avoid overhead each time
+                    int lenEscapeString = this.Spec.EscapeString.Length;
+                    int lenQuoteString = this.Spec.QuoteString.Length;
+                    int lenColumnDelimiter = this.Spec.ColumnDelimiter.Length;
+                    int lenCommentString = this.Spec.CommentString.Length;
+
+                    // Iterate char by char of the string
+                    for (i = 0; i < line.Length; ++i)
+                    {
+                        // First test for escape sequence ...
+                        if (line.Substring(i, lenEscapeString) == this.Spec.EscapeString)
+                        {
+                            if (ignoreNext == false)
+                            {
+                                ignoreNext = true;
+                                // Advance past the sequence
+                                i = i + lenEscapeString;
+                            }
+                            else
+                            {
+                                elementBuffer.Add(line[i]);
+                                ignoreNext = false;
+                            }
+                        }
+                        // .. then for the quote sequence ...
+                        else if (line.Substring(i, lenQuoteString) == this.Spec.QuoteString)
+                        {
+                            if (ignoreNext == false)
+                            {
+                                // Toggle the quotes (why isn't .Toggle() a bool method?)
+                                if (inQuotes == true)
+                                {
+                                    inQuotes = false;
+                                }
+                                else
+                                {
+                                    inQuotes = true;
+                                }
+                                i = i + lenQuoteString;
+                            }
+                            else
+                            {
+                                elementBuffer.Add(line[i]);
+                                ignoreNext = false;
+                            }
+
+                        }
+                        // ... then for comment sequence ...
+                        else if (line.Substring(i, lenCommentString) == this.Spec.CommentString)
+                        {
+                            if (ignoreNext == false && inQuotes == false)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                elementBuffer.Add(line[i]);
+                                ignoreNext = false;
+                            }
+                        }
+                        // .. then for column delimiters ...
+                        else if (line.Substring(i, lenColumnDelimiter) == this.Spec.ColumnDelimiter)
+                        {
+                            if (ignoreNext == false && inQuotes == false)
+                            {
+                                lineElements.Add(new string(elementBuffer.ToArray<char>()));
+                                elementBuffer.Clear();
+                                i = i + lenColumnDelimiter;
+                            }
+                            else
+                            {
+                                elementBuffer.Add(line[i]);
+                                ignoreNext = false;
+                            }
+
+                        }
+                        // .. finally since it is not special, add the character to the buffer
+                        else
+                        {
+                            elementBuffer.Add(line[i]);
+                            ignoreNext = false;
+                        }
+
+                    }
+                    return lineElements.ToList<string>();
+                }
+                // bypass all of the above for a quicker(?) route
+                else
+                {
+                    return line.Split(new string[] { this.Spec.ColumnDelimiter }, StringSplitOptions.None).ToList<string>();
+                }
             }
         }
 

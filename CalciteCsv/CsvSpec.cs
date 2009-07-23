@@ -109,9 +109,12 @@ namespace CalciteCsv
     }
 
     #endregion
-
+    /// <summary>
+    /// Preconfigured names of csv file types to be passed to the the 
+    /// CsvSpec constructor in order to obtain preconfigured CSV file types
+    /// </summary>
     public class CsvTypes
-    {
+    {   
         public static string TabSeperatedFile = "TabSeperatedFile";
         public static string CommaSeperatedFile = "CommaSeperatedFile";
     }
