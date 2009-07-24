@@ -51,7 +51,7 @@ namespace CalciteCsv
             {
                 string line = String.Empty;
                 while (true) {
-                    string line = stream.ReadLine();
+                    line = stream.ReadLine();
                     if (line != null)
                     {
                         this._CsvString = this._CsvString + line;
@@ -199,6 +199,7 @@ namespace CalciteCsv
             if (this.Spec.IsFixedWidth == true && this.Spec.FixedWidthFormat != String.Empty)
             {
                 // TODO: Handle fixed width formats
+                return new List<string>();
             }
             else
             {
@@ -261,6 +262,7 @@ namespace CalciteCsv
                         {
                             if (ignoreNext == false && inQuotes == false)
                             {
+                                lineElements.Add(new string(elementBuffer.ToArray<char>()));
                                 break;
                             }
                             else
@@ -276,7 +278,7 @@ namespace CalciteCsv
                             {
                                 lineElements.Add(new string(elementBuffer.ToArray<char>()));
                                 elementBuffer.Clear();
-                                i = i + lenColumnDelimiter;
+                                i = i + lenColumnDelimiter - 1;
                             }
                             else
                             {
