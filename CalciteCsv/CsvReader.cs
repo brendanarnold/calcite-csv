@@ -39,38 +39,31 @@ namespace CalciteCsv
         private List<double> _ColumnsAsDoublesCache = new List<double>();
         private string _CsvString = String.Empty;
 
-        /// <summary>
-        /// Create a CsvReader instance given a string of csv data from the
-        /// clipboard for example and a CsvSpec instance
-        /// </summary>
-        /// <param name="csvString">A string of CSV data (incl. newlines etc)</param>
-        /// <param name="spec">An instance of CsvSpec</param>
-        public CsvReader(string csvString, CsvSpec spec)
-        {
-            this._CsvString = csvString;
-            TextReader stringStream = new StringReader(csvString);
-            this.Stream = stringStream;
-            this.Spec = spec;
-            this.InitialiseCsvReader();
-        }
 
-        /// <summary>
-        /// Create a CsvReader instance given an instance of StreamReader and 
-        /// a CsvSpec instance
-        /// </summary>
-        /// <param name="stream">A StreamReader instance</param>
-        /// <param name="spec">An instance of CsvSpec</param>
-        public CsvReader(TextReader stream, CsvSpec spec) 
-        {
-            this.Stream = stream;
-            this.Spec = spec;
-            this.InitialiseCsvReader();
-        }
-
-        private void InitialiseCsvReader()
+        public CsvReader(TextReader stream, CsvSpec spec)
         {
             int i;
-
+            this.Spec = spec;
+            this.Stream = stream;
+            // If is a StringReader (does not support BaseStream resetting) then
+            // cache the full string. OK for reasonable sized strings...
+            if (stream is StringReader)
+            {
+                string line = String.Empty;
+                while (true) {
+                    string line = stream.ReadLine();
+                    if (line != null)
+                    {
+                        this._CsvString = this._CsvString + line;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                this.Reset();
+            }
+            // Populate the Header/Unit properties if they are manually defined in csv specification
             if (this.Spec.Headers.Count > 0 && this.Spec.HeaderRow < 0)
             {
                 this.Headers = this.Spec.Headers;
@@ -79,7 +72,7 @@ namespace CalciteCsv
             {
                 this.Units = this.Spec.Units;
             }
-            // TODO: Important! Assumes all data is below specified headers/units line
+            // If line specified in csv spec, read in line and reset stream
             if (this.Spec.HeaderRow > 0 || this.Spec.UnitsRow > 0)
             {
                 string lineBuffer = String.Empty;
@@ -97,6 +90,7 @@ namespace CalciteCsv
                     }
                 }
             }
+            this.Reset();
             
             // Parse the SkipRowsFormat to get a list of integers - probably should use 
             // something more intelligent than this
@@ -105,27 +99,10 @@ namespace CalciteCsv
                 this.Spec.RowsToSkip = CalciteCsv.Helpers.ParseRangeFormat(this.Spec.RowsToSkipFormat);
             }
 
-            // Set the buffer back to the start
-            this.Reset();
                         
         }
 
-        private void Reset()
-        // TODO: Test this!
-        {
-            if (this.Stream is StringReader)
-            {
-                TextReader stringStream = new StringReader(this._CsvString);
-                this.Stream = stringStream;
-            }
-            else if (this.Stream is StreamReader)
-            {
-                StreamReader stream = this.Stream as StreamReader;
-                stream.BaseStream.Position = 0;
-                stream.DiscardBufferedData();
-                this.Stream = stream as TextReader;
-            }
-        }
+
 
         /// <summary>
         /// Reads the next line of data into cache, returns true if is another row, false otherwise
@@ -326,6 +303,25 @@ namespace CalciteCsv
             }
         }
 
+        /// <summary>
+        /// Reset the CsvReader back to the beginning of the stream
+        /// </summary>
+        public void Reset()
+        // TODO: Test this!
+        {
+            if (this.Stream is StringReader)
+            {
+                TextReader stringStream = new StringReader(this._CsvString);
+                this.Stream = stringStream;
+            }
+            else if (this.Stream is StreamReader)
+            {
+                StreamReader stream = this.Stream as StreamReader;
+                stream.BaseStream.Position = 0;
+                stream.DiscardBufferedData();
+                this.Stream = stream as TextReader;
+            }
+        }
 
         #region IDisposable Members
 
