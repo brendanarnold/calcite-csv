@@ -1,0 +1,5 @@
+C:\PhD\code\misc\CalciteCsv\obj\Debug\ResolveAssemblyReference.cache
+C:\PhD\code\misc\CalciteCsv\bin\Debug\CalciteCsv.dll
+C:\PhD\code\misc\CalciteCsv\bin\Debug\CalciteCsv.pdb
+C:\PhD\code\misc\CalciteCsv\obj\Debug\CalciteCsv.dll
+C:\PhD\code\misc\CalciteCsv\obj\Debug\CalciteCsv.pdb
