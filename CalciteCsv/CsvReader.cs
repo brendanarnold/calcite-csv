@@ -195,7 +195,7 @@ namespace CalciteCsv
             
             int i;
             bool inQuotes = false;
-            bool ignoreNext = true;
+            bool ignoreNext = false;
             if (this.Spec.IsFixedWidth == true && this.Spec.FixedWidthFormat != String.Empty)
             {
                 // TODO: Handle fixed width formats
@@ -220,13 +220,14 @@ namespace CalciteCsv
                     for (i = 0; i < line.Length; ++i)
                     {
                         // First test for escape sequence ...
-                        if (line.Substring(i, lenEscapeString) == this.Spec.EscapeString)
+                        if (line.Length >= i + lenEscapeString &&
+                            line.Substring(i, lenEscapeString) == this.Spec.EscapeString)
                         {
                             if (ignoreNext == false)
                             {
                                 ignoreNext = true;
                                 // Advance past the sequence
-                                i = i + lenEscapeString;
+                                i = i + lenEscapeString - 1;
                             }
                             else
                             {
@@ -235,7 +236,8 @@ namespace CalciteCsv
                             }
                         }
                         // .. then for the quote sequence ...
-                        else if (line.Substring(i, lenQuoteString) == this.Spec.QuoteString)
+                        else if (line.Length >= i + lenQuoteString && 
+                            line.Substring(i, lenQuoteString) == this.Spec.QuoteString)
                         {
                             if (ignoreNext == false)
                             {
@@ -248,7 +250,7 @@ namespace CalciteCsv
                                 {
                                     inQuotes = true;
                                 }
-                                i = i + lenQuoteString;
+                                i = i + lenQuoteString - 1;
                             }
                             else
                             {
@@ -258,11 +260,11 @@ namespace CalciteCsv
 
                         }
                         // ... then for comment sequence ...
-                        else if (line.Substring(i, lenCommentString) == this.Spec.CommentString)
+                        else if (line.Length >= i + lenCommentString && 
+                            line.Substring(i, lenCommentString) == this.Spec.CommentString)
                         {
                             if (ignoreNext == false && inQuotes == false)
                             {
-                                lineElements.Add(new string(elementBuffer.ToArray<char>()));
                                 break;
                             }
                             else
@@ -272,7 +274,8 @@ namespace CalciteCsv
                             }
                         }
                         // .. then for column delimiters ...
-                        else if (line.Substring(i, lenColumnDelimiter) == this.Spec.ColumnDelimiter)
+                        else if (line.Length >= i + lenColumnDelimiter && 
+                            line.Substring(i, lenColumnDelimiter) == this.Spec.ColumnDelimiter)
                         {
                             if (ignoreNext == false && inQuotes == false)
                             {
@@ -295,6 +298,7 @@ namespace CalciteCsv
                         }
 
                     }
+                    lineElements.Add(new string(elementBuffer.ToArray<char>()));
                     return lineElements.ToList<string>();
                 }
                 // bypass all of the above for a quicker(?) route

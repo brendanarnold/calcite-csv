@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using System.Collections.Generic;
+using System;
 
 namespace CalciteCsvTesting
 {
@@ -14,7 +15,7 @@ namespace CalciteCsvTesting
     [TestClass()]
     public class CsvReaderTest
     {
-
+        string TabSeparatedFileBasicFilename = @"C:\PhD\code\misc\CalciteCsv\CalciteCsvTesting\TestFiles\TabSeperatedFileBasic.DAT";
 
         private TestContext testContextInstance;
 
@@ -66,48 +67,180 @@ namespace CalciteCsvTesting
 
 
         /// <summary>
-        ///A test for SplitLine
-        ///</summary>
+        /// Test CsvReader.SplitLine() behaviour with simple string
+        /// </summary>
         [TestMethod()]
-        public void SplitLineTest()
+        public void SplitLineTestBasic()
         {
             // stream and spec are necessary to instantiate a CsvReader instance
-            StreamReader stream = new StreamReader("C:\\PhD\\code\\misc\\Calcite\\CalciteCsvTesting\\TestFiles\\TabSeperatedFileBasic.DAT");
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicFilename);
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
             
             // First try a simple test
             CsvReader target = new CsvReader(stream, spec);
             string line = "flim,flam,flop";
-            List<string> expected = new List<string>() {"flim", "flam", "flop"}; // TODO: Initialize to an appropriate value
+            List<string> expected = new List<string>() {"flim", "flam", "flop"};
             List<string> actual = target.SplitLine(line);
-            CollectionAssert.AreEqual(expected, actual);
+            CollectionAssert.AreEqual(expected, actual, "Failed simple parsing of csv string");
+        }
+
+        /// <summary>
+        /// Test CsvReader.SplitLine() behaviour when given an empty string
+        /// </summary>
+        [TestMethod()]
+        public void SplitLineTestEmpty()
+        {
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicFilename);
+            CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
+            CsvReader target = new CsvReader(stream, spec);
+
+            // See how it handles an empty string
+            string line = String.Empty;
+            List<string> expected = new List<string>() { "" };
+            List<string> actual = target.SplitLine(line);
+            CollectionAssert.AreEqual(expected, actual, "Failed to deal with an empty line correctly");
+        }
+
+        /// <summary>
+        /// Test CsvReader.SplitLine() behaviour when given wrong delimiter
+        /// </summary>
+        [TestMethod()]
+        public void SplitLineTestWrongDelimiter() 
+        {
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicFilename);
+            CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
+            spec.ColumnDelimiter = ",";
+            CsvReader target = new CsvReader(stream, spec);
 
             // More difficult, should result in single line (is comma spec)
-            line = "flim\tflam\tflop";
-            expected = new List<string>() { "flim\tflam\tflop" };
-            actual = target.SplitLine(line);
-            CollectionAssert.AreEqual(expected, actual);
+            string line = "flim\tflam\tflop";
+            List<string> expected = new List<string>() { "flim\tflam\tflop" };
+            List<string> actual = target.SplitLine(line);
+            CollectionAssert.AreEqual(expected, actual, "Failed to parse a non matching string as expected");
+        }
+
+        /// <summary>
+        /// Test CsvReader.SplitLine() ability to deal with comments
+        /// </summary>
+        [TestMethod()]
+        public void SplitLineTestComment() 
+        {
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicFilename);
+            CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
+            spec.CommentString = "#";
+            CsvReader target = new CsvReader(stream, spec);
 
             // Test the comment parsing
-            line = "flim,flam#,flop";
-            expected = new List<string>() { "flim", "flam" };
+            string line = "flim,flam#,flop";
+            List<string> expected = new List<string>() { "flim", "flam" };
+            List<string> actual = target.SplitLine(line);
+            CollectionAssert.AreEqual(expected, actual, "Failed to parse comments correctly");
+
+            // Test for lnger comment sequences
+            spec.CommentString = @"//"; // C style comment sequence
+            line = @"flim,flam/,flop//,flaz";
+            expected = new List<string>() { "flim", "flam/", "flop" };
             actual = target.SplitLine(line);
-            CollectionAssert.AreEqual(expected, actual);
+            CollectionAssert.AreEqual(expected, actual, "Failed to parse multi character comments correctly");
+        }
+
+        /// <summary>
+        /// Test CsvReader.SplitLine() ability to deal with escaping characters
+        /// </summary>
+        [TestMethod()]
+        public void SplitLineTestEscaping() 
+        {
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicFilename);
+            CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
+            spec.EscapeString = @"\";
+            spec.CommentString = "#";
+            CsvReader target = new CsvReader(stream, spec);
 
             // Test the escaping
-            // TODO: Fix escaping in CsvReader!
-            line = "flim,flam\\#,flop";
-            expected = new List<string>() { "flim", "flam\\#", "flop" };
-            actual = target.SplitLine(line);
-            CollectionAssert.AreEqual(expected, actual);
+            string line = @"flim,flam\#,flop";
+            List<string> expected = new List<string>() { "flim", "flam#", "flop" };
+            List<string> actual = target.SplitLine(line);
+            CollectionAssert.AreEqual(expected, actual, "Failed to sucessfully escape a comment character");
 
-            // TODO: Test quoting
-            // TODO: Test multiline
-            // TODO: Test combination of above
-            // TODO: Test esoteric charaters
+            // Test multi-character escape strings
+            spec.EscapeString = @"\\";
+            line = @"flim,flam\\#,flop";
+            expected = new List<string>() { "flim", "flam#", "flop" };
+            CollectionAssert.AreEqual(expected, actual, "Failed to sucessfully escape using a multi-character escape sequence");
+        }
+
+        /// <summary>
+        /// Test CsvReader.SplitLine() ability to handle quoted sequences in string
+        /// </summary>
+        [TestMethod()]
+        public void SplitLineTestQuoting()
+        {
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicFilename);
+            CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
+            spec.QuoteString = "\"";
+            spec.ColumnDelimiter = ",";
+            spec.CommentString = "#";
+            CsvReader target = new CsvReader(stream, spec);
+
+            // Test basic quoting ignores comment characters and column delimiters
+            string line = "flim,\"flam#,flop\",flaz";
+            List<string> expected = new List<string>() { "flim", "flam#,flop", "flaz" };
+            List<string> actual = target.SplitLine(line);
+            CollectionAssert.AreEqual(expected, actual, "Failed to parse quoting correctly");
+
+            // Test a more typical usage scenario
+            line = "\"flim flam\",\"flam flam\",\"flop flam\"";
+            expected = new List<string>() { "flim flam", "flam flam", "flop flam" };
+            actual = target.SplitLine(line);
+            CollectionAssert.AreEqual(expected, actual, "Failed to parse quoting of all elements correctly");
+
+            // Test using quote strings of length > 1
+            spec.QuoteString = @"''";
+            line = @"flim,''flam#,flop'',flaz";
+            expected = new List<string>() { "flim", "flam#,flop", "flaz" };
+            actual = target.SplitLine(line);
+            CollectionAssert.AreEqual(expected, actual, "Failed to parse using multi-character quoting correctly");
+
+            // Test using quote strings of length > 1 in a more typical scenario
+            line = @"''flim flam'',''flam# flam'',''flop flam''";
+            expected = new List<string>() { "flim flam", "flam# flam", "flop flam" };
+            actual = target.SplitLine(line);
+            CollectionAssert.AreEqual(expected, actual, "Failed to parse using multi-character quoting of all elements correctly");
 
         }
 
+        /// <summary>
+        /// Test CsvReader.SplitLine() with unusual character inputs
+        /// </summary>
+        [TestMethod()]
+        public void SplitLineTestStrangeCharacters()
+        {
+            // TODO: Implement extended ascii for greek chaarcters and how they are interpreted
+
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicFilename);
+            CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
+            spec.QuoteString = "\"";
+            CsvReader target = new CsvReader(stream, spec);
+
+            // See how deals with newline character
+            string line = "flim\nflam";
+            List<string> expected = new List<string>() { "flim\nflam" };
+            List<string> actual = target.SplitLine(line);
+            CollectionAssert.AreEqual(expected, actual, "Failed to parse newline character correctly");
+
+            // Encode 'f' in unicode to see if correctly parsed
+            line = "\u0066lim";
+            expected = new List<string>() { "flim" };
+            actual = target.SplitLine(line);
+            CollectionAssert.AreEqual(expected, actual, "Failed to parse 'f' defined in unicode correctly");
+
+            // Encode some greek characters in unicode to see if correctly parsed
+            line = "\u03b8 (T),\u03abchic";
+            expected = new List<string>() { "\u03b8 (T)", "\u03abchic" };
+            actual = target.SplitLine(line);
+            CollectionAssert.AreEqual(expected, actual, "Failed to parse greek unicode characters correctly");
+
+        }
 
 
         /// <summary>
@@ -118,7 +251,7 @@ namespace CalciteCsvTesting
         {
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
             // Try intialising with StreamReader
-            StreamReader stream = new StreamReader("C:\\PhD\\code\\misc\\Calcite\\CalciteCsvTesting\\TestFiles\\TabSeperatedFileBasic.DAT");
+            StreamReader stream = new StreamReader("C:\\PhD\\code\\misc\\CalciteCsv\\CalciteCsvTesting\\TestFiles\\TabSeperatedFileBasic.DAT");
             CsvReader target = new CsvReader(stream, spec);
             Assert.IsInstanceOfType(target, typeof(CalciteCsv.CsvReader));
             // Try initialising with StringReader
