@@ -39,30 +39,51 @@ namespace CalciteCsv
         private List<double> _ColumnsAsDoublesCache = new List<double>();
         private string _CsvString = String.Empty;
 
+        /// <summary>
+        /// Pass in a StreamReader stream to generate a CsvReader
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="spec"></param>
+        public CsvReader(StreamReader stream, CsvSpec spec)
+            :this()
+        {
+            this.Stream = stream as TextReader;
+            this.Spec = spec;
+        }
 
-        public CsvReader(TextReader stream, CsvSpec spec)
+        /// <summary>
+        /// Pass in a StringReader stream to generate a CsvReader
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="spec"></param>
+        public CsvReader(StringReader stream, CsvSpec spec)
+            : this()
+        {
+            // StringReader does not support BaseStream resetting so
+            // cache the full string. OK for reasonable sized strings...
+            string line = String.Empty;
+            while (true)
+            {
+                line = stream.ReadLine();
+                if (line != null)
+                {
+                    this._CsvString = this._CsvString + line;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            this.Stream = stream as TextReader;
+            this.Reset();
+            this.Spec = spec;
+        }
+
+        // The constructor 
+        private CsvReader()
         {
             int i;
-            this.Spec = spec;
-            this.Stream = stream;
-            // If is a StringReader (does not support BaseStream resetting) then
-            // cache the full string. OK for reasonable sized strings...
-            if (stream is StringReader)
-            {
-                string line = String.Empty;
-                while (true) {
-                    line = stream.ReadLine();
-                    if (line != null)
-                    {
-                        this._CsvString = this._CsvString + line;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                this.Reset();
-            }
+
             // Populate the Header/Unit properties if they are manually defined in csv specification
             if (this.Spec.Headers.Count > 0 && this.Spec.HeaderRow < 0)
             {

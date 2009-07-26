@@ -118,5 +118,5 @@ namespace CalciteCsv
         public static string TabSeperatedFile = "TabSeperatedFile";
         public static string CommaSeperatedFile = "CommaSeperatedFile";
     }
-
+    
 }
