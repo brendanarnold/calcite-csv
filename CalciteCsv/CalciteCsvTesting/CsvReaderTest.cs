@@ -15,7 +15,8 @@ namespace CalciteCsvTesting
     [TestClass()]
     public class CsvReaderTest
     {
-        string TabSeparatedFileBasicFilename = @"C:\PhD\code\misc\CalciteCsv\CalciteCsvTesting\TestFiles\TabSeperatedFileBasic.DAT";
+        string TabSeparatedFileBasicDosFilename = @"C:\PhD\code\misc\CalciteCsv\CalciteCsvTesting\TestFiles\TabSeperatedFileBasicFromVS.txt";
+        string TabSeparatedFileBasicUnixFilename = @"C:\PhD\code\misc\CalciteCsv\CalciteCsvTesting\TestFiles\TabSeperatedFileBasicFromVim.txt";
 
         private TestContext testContextInstance;
 
@@ -73,7 +74,7 @@ namespace CalciteCsvTesting
         public void SplitLineTestBasic()
         {
             // stream and spec are necessary to instantiate a CsvReader instance
-            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicFilename);
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
             
             // First try a simple test
@@ -90,7 +91,7 @@ namespace CalciteCsvTesting
         [TestMethod()]
         public void SplitLineTestEmpty()
         {
-            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicFilename);
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
             CsvReader target = new CsvReader(stream, spec);
 
@@ -107,7 +108,7 @@ namespace CalciteCsvTesting
         [TestMethod()]
         public void SplitLineTestWrongDelimiter() 
         {
-            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicFilename);
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
             spec.ColumnDelimiter = ",";
             CsvReader target = new CsvReader(stream, spec);
@@ -125,7 +126,7 @@ namespace CalciteCsvTesting
         [TestMethod()]
         public void SplitLineTestComment() 
         {
-            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicFilename);
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
             spec.CommentString = "#";
             CsvReader target = new CsvReader(stream, spec);
@@ -150,7 +151,7 @@ namespace CalciteCsvTesting
         [TestMethod()]
         public void SplitLineTestEscaping() 
         {
-            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicFilename);
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
             spec.EscapeString = @"\";
             spec.CommentString = "#";
@@ -175,7 +176,7 @@ namespace CalciteCsvTesting
         [TestMethod()]
         public void SplitLineTestQuoting()
         {
-            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicFilename);
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
             spec.QuoteString = "\"";
             spec.ColumnDelimiter = ",";
@@ -217,7 +218,7 @@ namespace CalciteCsvTesting
         {
             // TODO: Implement extended ascii for greek chaarcters and how they are interpreted
 
-            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicFilename);
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
             spec.QuoteString = "\"";
             CsvReader target = new CsvReader(stream, spec);
@@ -251,13 +252,57 @@ namespace CalciteCsvTesting
         {
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
             // Try intialising with StreamReader
-            StreamReader stream = new StreamReader("C:\\PhD\\code\\misc\\CalciteCsv\\CalciteCsvTesting\\TestFiles\\TabSeperatedFileBasic.DAT");
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
             CsvReader target = new CsvReader(stream, spec);
             Assert.IsInstanceOfType(target, typeof(CalciteCsv.CsvReader));
             // Try initialising with StringReader
             StringReader stringStream = new StringReader("flim flam flop");
             CsvReader stringTarget = new CsvReader(stringStream, spec);
             Assert.IsInstanceOfType(stringTarget, typeof(CalciteCsv.CsvReader));
+        }
+
+        /// <summary>
+        /// A test for Reset
+        /// </summary>
+        [TestMethod()]
+        public void ResetTest()
+        {
+            CsvSpec spec = new CsvSpec(CsvTypes.TabSeperatedFile);
+
+            // Test the StreamReader on DOS textfile
+            StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
+            CsvReader target = new CsvReader(stream, spec);
+            target.ReadNextRow(); // Move onto first row
+            string[] expected = target.Columns.ToArray();
+            target.ReadNextRow(); // Move to second row
+            target.Reset();
+            target.ReadNextRow(); // Should read first row again
+            string[] actual = target.Columns.ToArray();
+            CollectionAssert.AreEqual(expected, actual, "First lines of StreamReader on DOS textfile do not match after reset");
+
+            // Test the StreamReader on UNIX textfile
+            stream = new StreamReader(this.TabSeparatedFileBasicUnixFilename);
+            target = new CsvReader(stream, spec);
+            target.ReadNextRow(); // Move onto first row
+            expected = target.Columns.ToArray();
+            target.ReadNextRow(); // Move to second row
+            target.Reset();
+            target.ReadNextRow(); // Should read first row again
+            actual = target.Columns.ToArray();
+            CollectionAssert.AreEqual(expected, actual, "First lines of StreamReader on UNIX text file do not match after reset");
+
+            // Test StringReader
+            StringReader stringStream = new StringReader("flim	flam\nflop	flaz");
+            CsvReader stringTarget = new CsvReader(stringStream, spec);
+            stringTarget.ReadNextRow(); // Move onto first row
+            expected = stringTarget.Columns.ToArray();
+            stringTarget.ReadNextRow(); // Move to second row
+            stringTarget.Reset();
+            stringTarget.ReadNextRow(); // Should read first row again
+            actual = stringTarget.Columns.ToArray();
+            CollectionAssert.AreEqual(expected, actual, "First lines of StringReader do not match after reset");
+
+
         }
     }
 }
