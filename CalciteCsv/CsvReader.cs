@@ -213,22 +213,50 @@ namespace CalciteCsv
         /// <returns>List of strings</returns>
         internal List<string> SplitLine(string line)
         {
-            
             int i;
             bool inQuotes = false;
             bool ignoreNext = false;
-            if (this.Spec.IsFixedWidth == true && this.Spec.FixedWidthFormat != String.Empty)
+            if (this.Spec.IsFixedWidth == true && this.Spec.FixedWidthColumnWidths.Count >= 0)
             {
-                // TODO: Handle fixed width formats
-                return new List<string>();
+                // Is fixed width
+                List<string> lineElements = new List<string>();
+                // TODO: Naively checks only the start of the string for the comment, 
+                // otherwise pads it with spaces and reads it in according to the format
+                if (line.StartsWith(this.Spec.CommentString) == false)
+                {
+                    // If the line is not long enough, pad with spaces
+                    int formatLength = this.Spec.FixedWidthColumnWidths.Sum();
+                    if (line.Length < formatLength)
+                    {
+                        line = line.PadRight(formatLength, ' ');
+                    }
+                    // See if can 'fast-track' the parsing
+                    // Go the 'fast-track': simply read in the format
+                    int index = 0;
+                    foreach (int colWidth in this.Spec.FixedWidthColumnWidths)
+                    {
+                        lineElements.Add(line.Substring(index, colWidth));
+                        index = index + colWidth;
+                    }
+                }
+                return lineElements;
             }
             else
             {
-                // Most times will not require parsing of this special strings
-                if (line.Contains(this.Spec.EscapeString)
+                // Return empty array in-line with expected return value if string
+                // completely commented out
+                if (line.StartsWith(this.Spec.CommentString) == true)
+                {
+                    return new List<string>() { };
+                } 
+                // See if can fast track the parsing if none of the 'special' characters
+                // are found
+                else if (line.Contains(this.Spec.EscapeString)
                     || line.Contains(this.Spec.CommentString)
                     || line.Contains(this.Spec.QuoteString))
                 {
+                    // Need to parse character by character
+
                     List<char> elementBuffer = new List<char>();
                     List<string> lineElements = new List<string>();
                     // Cache the lengths to avoid overhead each time
@@ -322,7 +350,7 @@ namespace CalciteCsv
                     lineElements.Add(new string(elementBuffer.ToArray<char>()));
                     return lineElements.ToList<string>();
                 }
-                // bypass all of the above for a quicker(?) route
+                // 'Fast-track' all of the above for the following ...
                 else
                 {
                     return line.Split(new string[] { this.Spec.ColumnDelimiter }, StringSplitOptions.None).ToList<string>();
@@ -334,10 +362,10 @@ namespace CalciteCsv
         /// Reset the CsvReader back to the beginning of the stream
         /// </summary>
         public void Reset()
-        // TODO: Test this!
         {
             if (this.Stream is StringReader)
             {
+                this.Stream.Dispose();
                 TextReader stringStream = new StringReader(this._CsvString);
                 this.Stream = stringStream;
             }
@@ -348,6 +376,14 @@ namespace CalciteCsv
                 stream.DiscardBufferedData();
                 this.Stream = stream as TextReader;
             }
+            // Erase the cached data
+            this.Headers.Clear();
+            this.Units.Clear();
+            this._ColumnsAsDoublesCache.Clear();
+            this._ColumnsCache.Clear();
+            this._IsDoublesConverted = false;
+            this._IsLineSplit = false;
+            this._LineCache = String.Empty;
         }
 
         #region IDisposable Members

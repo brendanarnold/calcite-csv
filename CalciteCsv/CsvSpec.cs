@@ -17,7 +17,7 @@ namespace CalciteCsv
         public List<string> Headers = new List<string>();
         public List<string> Units = new List<string>();
         public bool IsFixedWidth = false;
-        public string FixedWidthFormat = String.Empty;
+        public List<int> FixedWidthColumnWidths = new List<int>();
         public int HeaderRow = -1;
         public int UnitsRow = -1;
 
@@ -43,8 +43,26 @@ namespace CalciteCsv
                     this.EscapeString = "\\";
                     this.IsFixedWidth = false;
                     break;
+                case "FixedWidthFile":
+                    this.IsFixedWidth = true;
+                    this.CommentString = "#";
+                    break;
                 default:
                     break;
+            }
+        }
+
+        public CsvSpec(string csvType, List<int> fixedWidthColumnWidths)
+        {
+            if (csvType == "FixedWidthFile")
+            {
+                this.IsFixedWidth = true;
+                this.CommentString = "#";
+                this.FixedWidthColumnWidths = fixedWidthColumnWidths;
+            }
+            else
+            {
+                throw new ArgumentException("Second argument only valid with 'CsvType.FixedWidthFile' for first arguemnt");
             }
         }
 
@@ -72,9 +90,9 @@ namespace CalciteCsv
             // TODO: Make some more exception types
             if (this.IsFixedWidth == true)
             {
-                if (this.FixedWidthFormat == String.Empty)
+                if (this.FixedWidthColumnWidths.Count <= 0)
                 {
-                    throw new NoFixedWidthFormatDefinedException();
+                    throw new NoFixedWidthColumnWidthsDefinedException();
                 }
             }
             else
@@ -100,13 +118,14 @@ namespace CalciteCsv
     }
 
     [Serializable]
-    public class NoFixedWidthFormatDefinedException : ApplicationException
+    public class NoFixedWidthColumnWidthsDefinedException : ApplicationException
     {
-        public NoFixedWidthFormatDefinedException()
+        public NoFixedWidthColumnWidthsDefinedException()
             : base("IsFixedWidth is 'true' yet no fixed width format is specified")
         {
         }
     }
+
 
     #endregion
     /// <summary>
@@ -117,6 +136,7 @@ namespace CalciteCsv
     {   
         public static string TabSeperatedFile = "TabSeperatedFile";
         public static string CommaSeperatedFile = "CommaSeperatedFile";
+        public static string FixedWidthFile = "FixedWidthFile";
     }
     
 }

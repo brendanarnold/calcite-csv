@@ -137,12 +137,20 @@ namespace CalciteCsvTesting
             List<string> actual = target.SplitLine(line);
             CollectionAssert.AreEqual(expected, actual, "Failed to parse comments correctly");
 
-            // Test for lnger comment sequences
+            // Test for longer comment sequences
             spec.CommentString = @"//"; // C style comment sequence
             line = @"flim,flam/,flop//,flaz";
             expected = new List<string>() { "flim", "flam/", "flop" };
             actual = target.SplitLine(line);
             CollectionAssert.AreEqual(expected, actual, "Failed to parse multi character comments correctly");
+            
+            // Test behaviour when line is completely commented
+            spec.CommentString = "#";
+            line = "#flim,flam,flop";
+            expected = new List<string>() { };
+            actual = target.SplitLine(line);
+            CollectionAssert.AreEqual(expected, actual, "Failed to parse a completely commented line correctly");
+
         }
 
         /// <summary>
@@ -243,6 +251,29 @@ namespace CalciteCsvTesting
 
         }
 
+        [TestMethod()]
+        public void SplitLinesFixedWidthTest()
+        {
+            // Test behaviour when format is longer than input string
+            StringReader stringStream = new StringReader(this.TabSeparatedFileBasicDosFilename);
+            string line = "flim   flam flop";
+            CsvSpec spec = new CsvSpec(CsvTypes.FixedWidthFile, new List<int>(){7, 5, 7});
+            CsvReader target = new CsvReader(stringStream, spec);
+            List<string> expected = new List<string>() { "flim   ", "flam ", "flop   " };
+            List<string> actual = target.SplitLine(line);
+            CollectionAssert.AreEqual(expected, actual, "Failed to parse an overrun fixed-width format");
+
+            // Test behaviour when line is commented
+            spec.CommentString = "#";
+            line = "#flim   flam flop";
+            expected = new List<string>() { };
+            actual = target.SplitLine(line);
+            CollectionAssert.AreEqual(expected, actual, "Failed to parse a commented line correctly");
+
+
+
+        }
+
 
         /// <summary>
         ///A test for CsvReader Constructor
@@ -302,7 +333,8 @@ namespace CalciteCsvTesting
             actual = stringTarget.Columns.ToArray();
             CollectionAssert.AreEqual(expected, actual, "First lines of StringReader do not match after reset");
 
-
         }
+
+
     }
 }
