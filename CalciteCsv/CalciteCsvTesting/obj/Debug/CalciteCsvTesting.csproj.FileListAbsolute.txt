@@ -12,3 +12,10 @@ C:\PhD\code\misc\CalciteCsv\CalciteCsvTesting\bin\Debug\CalciteCsv.pdb
 C:\PhD\code\misc\CalciteCsv\CalciteCsvTesting\obj\Debug\ResolveAssemblyReference.cache
 C:\PhD\code\misc\CalciteCsv\CalciteCsvTesting\obj\Debug\CalciteCsvTesting.dll
 C:\PhD\code\misc\CalciteCsv\CalciteCsvTesting\obj\Debug\CalciteCsvTesting.pdb
+C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\bin\Debug\CalciteCsvTesting.dll
+C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\bin\Debug\CalciteCsvTesting.pdb
+C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\bin\Debug\CalciteCsv.dll
+C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\bin\Debug\CalciteCsv.pdb
+C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\obj\Debug\CalciteCsvTesting.dll
+C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\obj\Debug\CalciteCsvTesting.pdb

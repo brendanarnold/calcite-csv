@@ -15,8 +15,8 @@ namespace CalciteCsvTesting
     [TestClass()]
     public class CsvReaderTest
     {
-        string TabSeparatedFileBasicDosFilename = @"C:\PhD\code\misc\CalciteCsv\CalciteCsvTesting\TestFiles\TabSeperatedFileBasicFromVS.txt";
-        string TabSeparatedFileBasicUnixFilename = @"C:\PhD\code\misc\CalciteCsv\CalciteCsvTesting\TestFiles\TabSeperatedFileBasicFromVim.txt";
+        string TabSeparatedFileBasicDosFilename = @"C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\TestFiles\TabSeperatedFileBasicFromVS.txt";
+        string TabSeparatedFileBasicUnixFilename = @"C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\TestFiles\TabSeperatedFileBasicFromVim.txt";
 
         private TestContext testContextInstance;
 
