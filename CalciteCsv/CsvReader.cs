@@ -11,10 +11,10 @@ namespace CalciteCsv
         // TODO: Deal with blank lines and lines with whitespace only
 
         /// <summary>
-        /// The CsvSpec passed when the reader was generated
+        /// The current CsvSpec that the reader is following
         /// </summary>
         public CsvSpec Spec = new CsvSpec();
-        private TextReader Stream;
+        private TextReader _Stream;
         /// <summary>
         /// The headers for the columns, read from the file or from the Spec
         /// </summary>
@@ -47,7 +47,7 @@ namespace CalciteCsv
         public CsvReader(StreamReader stream, CsvSpec spec)
             :this()
         {
-            this.Stream = stream as TextReader;
+            this._Stream = stream as TextReader;
             this.Spec = spec;
         }
 
@@ -74,7 +74,7 @@ namespace CalciteCsv
                     break;
                 }
             }
-            this.Stream = stream as TextReader;
+            this._Stream = stream as TextReader;
             this.Reset();
             this.Spec = spec;
         }
@@ -100,7 +100,7 @@ namespace CalciteCsv
                 int stopLine = System.Math.Max(this.Spec.HeaderRow, this.Spec.UnitsRow);
                 for (i = 1; i <= stopLine; i++)
                 {
-                    lineBuffer = this.Stream.ReadLine();
+                    lineBuffer = this._Stream.ReadLine();
                     if (i == this.Spec.HeaderRow)
                     {
                         this.Headers = this.SplitLine(lineBuffer);
@@ -135,7 +135,7 @@ namespace CalciteCsv
                 this.SkipRow();
                 this.FileLineCount = this.FileLineCount + 1;
             }
-            this._LineCache = this.Stream.ReadLine();
+            this._LineCache = this._Stream.ReadLine();
             this._IsLineSplit = false;
             this._ColumnsCache.Clear();
             this._IsDoublesConverted = false;
@@ -203,7 +203,7 @@ namespace CalciteCsv
         public void SkipRow()
         {
             this.FileLineCount = this.FileLineCount + 1;
-            this.Stream.ReadLine();
+            this._Stream.ReadLine();
         }
 
         /// <summary>
@@ -363,18 +363,18 @@ namespace CalciteCsv
         /// </summary>
         public void Reset()
         {
-            if (this.Stream is StringReader)
+            if (this._Stream is StringReader)
             {
-                this.Stream.Dispose();
+                this._Stream.Dispose();
                 TextReader stringStream = new StringReader(this._CsvString);
-                this.Stream = stringStream;
+                this._Stream = stringStream;
             }
-            else if (this.Stream is StreamReader)
+            else if (this._Stream is StreamReader)
             {
-                StreamReader stream = this.Stream as StreamReader;
+                StreamReader stream = this._Stream as StreamReader;
                 stream.BaseStream.Position = 0;
                 stream.DiscardBufferedData();
-                this.Stream = stream as TextReader;
+                this._Stream = stream as TextReader;
             }
             // Erase the cached data
             this.Headers.Clear();
@@ -390,7 +390,7 @@ namespace CalciteCsv
 
         void IDisposable.Dispose()
         {
-            this.Stream.Dispose();
+            this._Stream.Dispose();
         }
 
         #endregion

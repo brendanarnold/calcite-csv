@@ -18,8 +18,10 @@ namespace CalciteCsv
         public List<string> Units = new List<string>();
         public bool IsFixedWidth = false;
         public List<int> FixedWidthColumnWidths = new List<int>();
+        public bool IsFixedWidthDelimiter = true;
         public int HeaderRow = -1;
         public int UnitsRow = -1;
+        public string LineDelimiter = String.Empty;
 
         public CsvSpec() : this(String.Empty) { }
 
