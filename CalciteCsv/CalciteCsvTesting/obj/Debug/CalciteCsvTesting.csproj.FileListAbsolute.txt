@@ -19,3 +19,10 @@ C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\bin\Debug\Ca
 C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\obj\Debug\ResolveAssemblyReference.cache
 C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\obj\Debug\CalciteCsvTesting.dll
 C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\obj\Debug\CalciteCsvTesting.pdb
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv\CalciteCsvTesting\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv\CalciteCsvTesting\obj\Debug\CalciteCsvTesting.dll
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv\CalciteCsvTesting\bin\Debug\CalciteCsvTesting.dll
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv\CalciteCsvTesting\bin\Debug\CalciteCsvTesting.pdb
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv\CalciteCsvTesting\bin\Debug\CalciteCsv.dll
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv\CalciteCsvTesting\bin\Debug\CalciteCsv.pdb
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv\CalciteCsvTesting\obj\Debug\CalciteCsvTesting.pdb
