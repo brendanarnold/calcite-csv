@@ -1,0 +1,5 @@
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv\bin\Release\CalciteCsv.dll
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv\bin\Release\CalciteCsv.pdb
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv\obj\Release\ResolveAssemblyReference.cache
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv\obj\Release\CalciteCsv.dll
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv\obj\Release\CalciteCsv.pdb
