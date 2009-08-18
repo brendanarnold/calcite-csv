@@ -1,26 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\CalciteCsvNunitTesting.nunit" total="1" errors="1" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2009-08-18" time="22:07:43">
-  <environment nunit-version="2.5.2.9222" clr-version="2.0.50727.3082" os-version="Microsoft Windows NT 5.1.2600 Service Pack 2" platform="Win32NT" cwd="C:\Program Files\NUnit 2.5.2\bin\net-2.0" machine-name="GRIMSBY" user="ba1224" user-domain="PHYSICS" />
-  <culture-info current-culture="en-GB" current-uiculture="en-US" />
-  <test-suite name="C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\CalciteCsvNunitTesting.nunit" executed="True" success="False" time="0.031" asserts="0">
+<test-results name="C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\CalciteCsvNunitTesting.nunit" total="14" errors="1" failures="1" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2009-08-19" time="00:28:12">
+  <environment nunit-version="2.5.2.9222" clr-version="2.0.50727.3082" os-version="Microsoft Windows NT 5.1.2600 Service Pack 3" platform="Win32NT" cwd="C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv" machine-name="CLEETHORPES" user="user" user-domain="CLEETHORPES" />
+  <culture-info current-culture="en-US" current-uiculture="en-US" />
+  <test-suite name="C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\CalciteCsvNunitTesting.nunit" executed="True" success="False" time="0.172" asserts="0">
     <results>
-      <test-suite name="C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\bin\Debug\CalciteCsvNunitTesting.dll" executed="True" success="False" time="0.031" asserts="0">
+      <test-suite name="C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\bin\Debug\CalciteCsvNunitTesting.dll" executed="True" success="False" time="0.156" asserts="0">
         <results>
-          <test-suite name="CalciteCsvNunitTesting" executed="True" success="False" time="0.031" asserts="0">
+          <test-suite name="CalciteCsvNunitTesting" executed="True" success="False" time="0.141" asserts="0">
             <results>
-              <test-suite name="CsvWriterTest" executed="True" success="False" time="0.016" asserts="0">
+              <test-suite name="CsvReaderTest" executed="True" success="False" time="0.125" asserts="0">
                 <results>
-                  <test-case name="CalciteCsvNunitTesting.CsvWriterTest.CsvWriterConstructorTest" executed="True" success="False" time="0.016" asserts="1">
+                  <test-case name="CalciteCsvNunitTesting.CsvReaderTest.CsvReaderConstructorTest" executed="True" success="True" time="0.000" asserts="2" />
+                  <test-case name="CalciteCsvNunitTesting.CsvReaderTest.ResetTest" executed="True" success="False" time="0.000" asserts="0">
                     <failure>
-                      <message><![CDATA[System.IO.DirectoryNotFoundException : Could not find a part of the path 'C:\PhD\code\misc\CalciteCsv\TestFiles\TabSeperatedFileBasicFromVS.txt'.]]></message>
-                      <stack-trace><![CDATA[at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
-at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy)
-at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)
-at System.IO.StreamWriter.CreateFile(String path, Boolean append)
-at System.IO.StreamWriter..ctor(String path, Boolean append, Encoding encoding, Int32 bufferSize)
-at System.IO.StreamWriter..ctor(String path)
-at CalciteCsvNunitTesting.CsvWriterTest.CsvWriterConstructorTest() in C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\CsvWriterTest.cs:line 31
+                      <message><![CDATA[System.NullReferenceException : Object reference not set to an instance of an object.]]></message>
+                      <stack-trace><![CDATA[at CalciteCsv.CsvReader.SplitLine(String line) in C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv\CsvReader.cs:line 249
+at CalciteCsv.CsvReader.get_Columns() in C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsv\CsvReader.cs:line 165
+at CalciteCsvNunitTesting.CsvReaderTest.ResetTest() in C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\CsvReaderTest.cs:line 258
+]]></stack-trace>
+                    </failure>
+                  </test-case>
+                  <test-case name="CalciteCsvNunitTesting.CsvReaderTest.SplitLinesFixedWidthTest" executed="True" success="True" time="0.000" asserts="2" />
+                  <test-case name="CalciteCsvNunitTesting.CsvReaderTest.SplitLineTestBasic" executed="True" success="True" time="0.000" asserts="1" />
+                  <test-case name="CalciteCsvNunitTesting.CsvReaderTest.SplitLineTestComment" executed="True" success="True" time="0.000" asserts="3" />
+                  <test-case name="CalciteCsvNunitTesting.CsvReaderTest.SplitLineTestEmpty" executed="True" success="True" time="0.000" asserts="1" />
+                  <test-case name="CalciteCsvNunitTesting.CsvReaderTest.SplitLineTestEscaping" executed="True" success="True" time="0.000" asserts="2" />
+                  <test-case name="CalciteCsvNunitTesting.CsvReaderTest.SplitLineTestQuoting" executed="True" success="True" time="0.000" asserts="4" />
+                  <test-case name="CalciteCsvNunitTesting.CsvReaderTest.SplitLineTestStrangeCharacters" executed="True" success="True" time="0.000" asserts="3" />
+                  <test-case name="CalciteCsvNunitTesting.CsvReaderTest.SplitLineTestWrongDelimiter" executed="True" success="True" time="0.000" asserts="1" />
+                </results>
+              </test-suite>
+              <test-suite name="CsvWriterTest" executed="True" success="False" time="0.000" asserts="0">
+                <results>
+                  <test-case name="CalciteCsvNunitTesting.CsvWriterTest.BasicJoinLineTest" executed="True" success="True" time="0.000" asserts="1" />
+                  <test-case name="CalciteCsvNunitTesting.CsvWriterTest.CsvWriterConstructorTest" executed="True" success="True" time="0.000" asserts="2" />
+                  <test-case name="CalciteCsvNunitTesting.CsvWriterTest.FixedWidthJoinLineTest" executed="True" success="True" time="0.000" asserts="2" />
+                  <test-case name="CalciteCsvNunitTesting.CsvWriterTest.OutputTest" executed="True" success="False" time="0.000" asserts="1">
+                    <failure>
+                      <message><![CDATA[  CsvWriter does not generate expected string
+  Expected string length 71 but was 59. Strings differ at index 0.
+  Expected: "foo\tbar\tflim\r\n0.1\t0e-5\t0.0\r\n#Some commented text\r\nSome uncomm..."
+  But was:  "0.1\t0e-5\t0.0\r\n#Some commented text\r\nSome uncommented text\r\n"
+  -----------^
+]]></message>
+                      <stack-trace><![CDATA[at CalciteCsvNunitTesting.CsvWriterTest.OutputTest() in C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\CsvWriterTest.cs:line 59
 ]]></stack-trace>
                     </failure>
                   </test-case>

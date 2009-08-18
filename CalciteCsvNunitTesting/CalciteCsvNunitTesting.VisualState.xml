@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<VisualState xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ShowCheckBoxes="false">
-  <TopNode>[0-1000]C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\CalciteCsvNunitTesting.nunit</TopNode>
-  <SelectedNode>[0-1013]CalciteCsvNunitTesting.CsvWriterTest.CsvWriterConstructorTest</SelectedNode>
+<VisualState xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ShowCheckBoxes="true">
+  <TopNode>[0-1000]C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\CalciteCsvNunitTesting.nunit</TopNode>
+  <SelectedNode>[0-1011]CalciteCsvNunitTesting.CsvReaderTest.ResetTest</SelectedNode>
   <ExcludeCategories>false</ExcludeCategories>
   <Nodes>
-    <Node UniqueName="[0-1000]C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\CalciteCsvNunitTesting.nunit" Expanded="true" />
-    <Node UniqueName="[0-1017]C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\bin\Debug\CalciteCsvNunitTesting.dll" Expanded="true" />
+    <Node UniqueName="[0-1000]C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\CalciteCsvNunitTesting.nunit" Expanded="true" />
+    <Node UniqueName="[0-1017]C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\bin\Debug\CalciteCsvNunitTesting.dll" Expanded="true" />
     <Node UniqueName="[0-1018]CalciteCsvNunitTesting" Expanded="true" />
     <Node UniqueName="[0-1001]CalciteCsvNunitTesting.CsvReaderTest" Expanded="true" />
     <Node UniqueName="[0-1012]CalciteCsvNunitTesting.CsvWriterTest" Expanded="true" />

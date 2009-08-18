@@ -49,6 +49,7 @@
     <Compile Include="CsvReaderTest.cs" />
     <Compile Include="CsvWriterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Variables.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CalciteCsv\CalciteCsv.csproj">

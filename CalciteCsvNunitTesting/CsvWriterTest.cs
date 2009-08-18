@@ -11,9 +11,6 @@ namespace CalciteCsvNunitTesting
     [TestFixture]
     class CsvWriterTest
     {
-
-        string TabSeparatedFileBasicDosFilename = @"..\..\..\TestFiles\TabSeperatedFileBasicFromVS.txt";
-
         /// <summary>
         ///A test for CsvWriter Constructor
         ///</summary>
@@ -26,11 +23,13 @@ namespace CalciteCsvNunitTesting
             StringWriter stringStream = new StringWriter();
             CsvWriter stringTarget = new CsvWriter(stringStream, spec);
             Assert.That(stringTarget, Is.TypeOf(typeof(CalciteCsv.CsvWriter)), "Constructor from StringWriter does not function");
+            stringTarget.EndWriting();
 
             // Test when constructing using a StreamWriter instance
-            StreamWriter streamStream = new StreamWriter(this.TabSeparatedFileBasicDosFilename);
+            StreamWriter streamStream = new StreamWriter(Variables.TabSeparatedFileBasicDosFilename);
             CsvWriter streamTarget = new CsvWriter(streamStream, spec);
             Assert.That(streamTarget, Is.TypeOf(typeof(CalciteCsv.CsvWriter)), "Constructor from StreamWriter does not function");
+            streamTarget.EndWriting();
 
         }
 
@@ -58,6 +57,7 @@ namespace CalciteCsvNunitTesting
                 + "#Some commented text" + System.Environment.NewLine
                 + "Some uncommented text";
             Assert.AreEqual(expected, actual, "CsvWriter does not generate expected string");
+            stringTarget.EndWriting();
 
         }
 
@@ -74,6 +74,7 @@ namespace CalciteCsvNunitTesting
             string actual = stringTarget.JoinLine(new List<string>() { "foo", "bar", "flim" });
             string expected = "foo\tbar\tflim";
             Assert.AreEqual(actual, expected, "Basic JoinLine test did not match");
+            stringTarget.EndWriting();
         }
 
         [Test]
@@ -88,6 +89,7 @@ namespace CalciteCsvNunitTesting
             string actual = stringTarget.JoinLine(new List<string>() { "foooooo", "barrrr", "flim", "flam" });
             string expected = "foo  bar  flim  flam   ";
             Assert.AreEqual(actual, expected, "JoinLine with fixed width specification and delimiter does not match expected output");
+            stringTarget.EndWriting();
 
             // Test behaviour of fixed width without delimiter
             spec = new CsvSpec(CsvTypes.FixedWidthFile, new List<int>() { 5, 5, 6, 7 });
@@ -98,7 +100,7 @@ namespace CalciteCsvNunitTesting
             actual = stringTarget.JoinLine(new List<string>() { "foooooo", "barrrr", "flim", "flam" });
             expected = "foooobarrrflim  flam   ";
             Assert.AreEqual(actual, expected, "JoinLine with fixed width specification and no delimiter does not match expected output");
-
+            stringTarget.EndWriting();
         }
 
 

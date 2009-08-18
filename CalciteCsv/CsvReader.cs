@@ -387,11 +387,20 @@ namespace CalciteCsv
             this._LineCache = String.Empty;
         }
 
+        /// <summary>
+        /// Call this when you are done with the CsvReader unless you have called the reader within a 
+        /// 'using' statement
+        /// </summary>
+        public void EndReading()
+        {
+            this._Stream.Dispose();
+        }
+
         #region IDisposable Members
 
         void IDisposable.Dispose()
         {
-            this._Stream.Dispose();
+            this.EndReading();
         }
 
         #endregion

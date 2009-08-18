@@ -7,3 +7,12 @@ C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\bin\Debug\nunit.framework.xml
 C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\bin\Debug\CalciteCsv.pdb
 C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\obj\Debug\CalciteCsvNunitTesting.dll
 C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\obj\Debug\CalciteCsvNunitTesting.pdb
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\bin\Debug\CalciteCsvNunitTesting.dll
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\bin\Debug\CalciteCsvNunitTesting.pdb
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\bin\Debug\CalciteCsv.dll
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\bin\Debug\nunit.framework.dll
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\bin\Debug\nunit.framework.xml
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\bin\Debug\CalciteCsv.pdb
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\obj\Debug\CalciteCsvNunitTesting.dll
+C:\Documents and Settings\user\Desktop\CalciteCsv-Working\CalciteCsvNunitTesting\obj\Debug\CalciteCsvNunitTesting.pdb

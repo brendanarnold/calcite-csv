@@ -156,7 +156,7 @@ namespace CalciteCsv
 
         #region IDisposable Members
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
             this.EndWriting();
         }
