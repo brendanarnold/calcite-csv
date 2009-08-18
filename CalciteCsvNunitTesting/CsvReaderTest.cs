@@ -1,86 +1,34 @@
-﻿using CalciteCsv;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using System.Linq;
+using System.Text;
+using NUnit.Framework;
+using CalciteCsv;
+using System.IO;
 
-namespace CalciteCsvTesting
+namespace CalciteCsvNunitTesting
 {
-    
-    
-    /// <summary>
-    ///This is a test class for CsvReaderTest and is intended
-    ///to contain all CsvReaderTest Unit Tests
-    ///</summary>
-    [TestClass()]
+    [TestFixture]
     public class CsvReaderTest
     {
-        string TabSeparatedFileBasicDosFilename = @"C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\TestFiles\TabSeperatedFileBasicFromVS.txt";
-        string TabSeparatedFileBasicUnixFilename = @"C:\Documents and Settings\user\Desktop\CalciteCsv\CalciteCsvTesting\TestFiles\TabSeperatedFileBasicFromVim.txt";
-
-        private TestContext testContextInstance;
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
-
-        #region Additional test attributes
-        // 
-        //You can use the following additional attributes as you write your tests:
-        //
-        //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
-        //Use ClassCleanup to run code after all tests in a class have run
-        //[ClassCleanup()]
-        //public static void MyClassCleanup()
-        //{
-        //}
-        //
-        //Use TestInitialize to run code before running each test
-        //[TestInitialize()]
-        //public void MyTestInitialize()
-        //{
-        //}
-        //
-        //Use TestCleanup to run code after each test has run
-        //[TestCleanup()]
-        //public void MyTestCleanup()
-        //{
-        //}
-        //
-        #endregion
+        string TabSeparatedFileBasicDosFilename = @"C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\TestFiles\TabSeperatedFileBasicFromVS.txt";
+        string TabSeparatedFileBasicUnixFilename = @"C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\TestFiles\TabSeperatedFileBasicFromVim.txt";
 
 
         /// <summary>
         /// Test CsvReader.SplitLine() behaviour with simple string
         /// </summary>
-        [TestMethod()]
+        [Test]
         public void SplitLineTestBasic()
         {
             // stream and spec are necessary to instantiate a CsvReader instance
             StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
-            
+
             // First try a simple test
             CsvReader target = new CsvReader(stream, spec);
             string line = "flim,flam,flop";
-            List<string> expected = new List<string>() {"flim", "flam", "flop"};
+            List<string> expected = new List<string>() { "flim", "flam", "flop" };
             List<string> actual = target.SplitLine(line);
             CollectionAssert.AreEqual(expected, actual, "Failed simple parsing of csv string");
         }
@@ -88,7 +36,7 @@ namespace CalciteCsvTesting
         /// <summary>
         /// Test CsvReader.SplitLine() behaviour when given an empty string
         /// </summary>
-        [TestMethod()]
+        [Test]
         public void SplitLineTestEmpty()
         {
             StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
@@ -105,8 +53,8 @@ namespace CalciteCsvTesting
         /// <summary>
         /// Test CsvReader.SplitLine() behaviour when given wrong delimiter
         /// </summary>
-        [TestMethod()]
-        public void SplitLineTestWrongDelimiter() 
+        [Test]
+        public void SplitLineTestWrongDelimiter()
         {
             StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
@@ -123,8 +71,8 @@ namespace CalciteCsvTesting
         /// <summary>
         /// Test CsvReader.SplitLine() ability to deal with comments
         /// </summary>
-        [TestMethod()]
-        public void SplitLineTestComment() 
+        [Test]
+        public void SplitLineTestComment()
         {
             StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
@@ -143,7 +91,7 @@ namespace CalciteCsvTesting
             expected = new List<string>() { "flim", "flam/", "flop" };
             actual = target.SplitLine(line);
             CollectionAssert.AreEqual(expected, actual, "Failed to parse multi character comments correctly");
-            
+
             // Test behaviour when line is completely commented
             spec.CommentString = "#";
             line = "#flim,flam,flop";
@@ -156,8 +104,8 @@ namespace CalciteCsvTesting
         /// <summary>
         /// Test CsvReader.SplitLine() ability to deal with escaping characters
         /// </summary>
-        [TestMethod()]
-        public void SplitLineTestEscaping() 
+        [Test]
+        public void SplitLineTestEscaping()
         {
             StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
@@ -181,7 +129,7 @@ namespace CalciteCsvTesting
         /// <summary>
         /// Test CsvReader.SplitLine() ability to handle quoted sequences in string
         /// </summary>
-        [TestMethod()]
+        [Test]
         public void SplitLineTestQuoting()
         {
             StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
@@ -221,7 +169,7 @@ namespace CalciteCsvTesting
         /// <summary>
         /// Test CsvReader.SplitLine() with unusual character inputs
         /// </summary>
-        [TestMethod()]
+        [Test]
         public void SplitLineTestStrangeCharacters()
         {
             // TODO: Implement extended ascii for greek chaarcters and how they are interpreted
@@ -251,13 +199,13 @@ namespace CalciteCsvTesting
 
         }
 
-        [TestMethod()]
+        [Test]
         public void SplitLinesFixedWidthTest()
         {
             // Test behaviour when format is longer than input string
             StringReader stringStream = new StringReader(this.TabSeparatedFileBasicDosFilename);
             string line = "flim   flam flop";
-            CsvSpec spec = new CsvSpec(CsvTypes.FixedWidthFile, new List<int>(){7, 5, 7});
+            CsvSpec spec = new CsvSpec(CsvTypes.FixedWidthFile, new List<int>() { 7, 5, 7 });
             CsvReader target = new CsvReader(stringStream, spec);
             List<string> expected = new List<string>() { "flim   ", "flam ", "flop   " };
             List<string> actual = target.SplitLine(line);
@@ -278,24 +226,24 @@ namespace CalciteCsvTesting
         /// <summary>
         ///A test for CsvReader Constructor
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void CsvReaderConstructorTest()
         {
             CsvSpec spec = new CsvSpec(CsvTypes.CommaSeperatedFile);
             // Try intialising with StreamReader
             StreamReader stream = new StreamReader(this.TabSeparatedFileBasicDosFilename);
             CsvReader target = new CsvReader(stream, spec);
-            Assert.IsInstanceOfType(target, typeof(CalciteCsv.CsvReader));
+            Assert.That(target, Is.TypeOf(typeof(CalciteCsv.CsvReader)));
             // Try initialising with StringReader
             StringReader stringStream = new StringReader("flim flam flop");
             CsvReader stringTarget = new CsvReader(stringStream, spec);
-            Assert.IsInstanceOfType(stringTarget, typeof(CalciteCsv.CsvReader));
+            Assert.That(stringTarget, Is.TypeOf(typeof(CalciteCsv.CsvReader)));
         }
 
         /// <summary>
         /// A test for Reset
         /// </summary>
-        [TestMethod()]
+        [Test]
         public void ResetTest()
         {
             CsvSpec spec = new CsvSpec(CsvTypes.TabSeperatedFile);
@@ -334,6 +282,7 @@ namespace CalciteCsvTesting
             CollectionAssert.AreEqual(expected, actual, "First lines of StringReader do not match after reset");
 
         }
+
 
 
     }

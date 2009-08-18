@@ -1,76 +1,23 @@
-﻿using CalciteCsv;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using System.Linq;
+using System.Text;
+using NUnit.Framework;
+using System.IO;
+using CalciteCsv;
 
-namespace CalciteCsvTesting
+namespace CalciteCsvNunitTesting
 {
-
-
-    /// <summary>
-    ///This is a test class for CsvWriterTest and is intended
-    ///to contain all CsvWriterTest Unit Tests
-    ///</summary>
-    [TestClass()]
-    public class CsvWriterTest
+    [TestFixture]
+    class CsvWriterTest
     {
 
-        string TabSeparatedFileBasicDosFilename = @"..\..\..\CalciteCsvTesting\TestFiles\TabSeperatedFileBasicFromVS.txt";
-
-        private TestContext testContextInstance;
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
-
-        #region Additional test attributes
-        // 
-        //You can use the following additional attributes as you write your tests:
-        //
-        //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
-        //Use ClassCleanup to run code after all tests in a class have run
-        //[ClassCleanup()]
-        //public static void MyClassCleanup()
-        //{
-        //}
-        //
-        //Use TestInitialize to run code before running each test
-        //[TestInitialize()]
-        //public void MyTestInitialize()
-        //{
-        //}
-        //
-        //Use TestCleanup to run code after each test has run
-        //[TestCleanup()]
-        //public void MyTestCleanup()
-        //{
-        //}
-        //
-        #endregion
-
+        string TabSeparatedFileBasicDosFilename = @"..\..\..\TestFiles\TabSeperatedFileBasicFromVS.txt";
 
         /// <summary>
         ///A test for CsvWriter Constructor
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void CsvWriterConstructorTest()
         {
             CsvSpec spec = new CsvSpec(CsvTypes.TabSeperatedFile);
@@ -78,12 +25,12 @@ namespace CalciteCsvTesting
             // Test when constructing using a StringWriter instance
             StringWriter stringStream = new StringWriter();
             CsvWriter stringTarget = new CsvWriter(stringStream, spec);
-            Assert.IsInstanceOfType(stringTarget, typeof(CalciteCsv.CsvWriter), "Constructor from StringWriter does not function");
+            Assert.That(stringTarget, Is.TypeOf(typeof(CalciteCsv.CsvWriter)), "Constructor from StringWriter does not function");
 
             // Test when constructing using a StreamWriter instance
             StreamWriter streamStream = new StreamWriter(this.TabSeparatedFileBasicDosFilename);
             CsvWriter streamTarget = new CsvWriter(streamStream, spec);
-            Assert.IsInstanceOfType(streamTarget, typeof(CalciteCsv.CsvWriter), "Constructor from StreamWriter does not function");
+            Assert.That(streamTarget, Is.TypeOf(typeof(CalciteCsv.CsvWriter)), "Constructor from StreamWriter does not function");
 
         }
 
@@ -91,7 +38,7 @@ namespace CalciteCsvTesting
         /// <summary>
         ///A test for Output
         ///</summary>
-        [TestMethod()]
+        [Test]
         public void OutputTest()
         {
             CsvSpec spec = new CsvSpec(CsvTypes.TabSeperatedFile);
@@ -116,7 +63,7 @@ namespace CalciteCsvTesting
 
 
 
-        [TestMethod()]
+        [Test]
         public void BasicJoinLineTest()
         {
             // Basic test
@@ -129,7 +76,7 @@ namespace CalciteCsvTesting
             Assert.AreEqual(actual, expected, "Basic JoinLine test did not match");
         }
 
-        [TestMethod()]
+        [Test]
         public void FixedWidthJoinLineTest()
         {
             // Test behaviour of fixed width with delimiter

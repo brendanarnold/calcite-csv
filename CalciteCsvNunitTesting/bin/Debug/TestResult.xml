@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\bin\Debug\CalciteCsvNunitTesting.dll" total="1" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2009-08-18" time="21:50:44">
+  <environment nunit-version="2.5.2.9222" clr-version="2.0.50727.3082" os-version="Microsoft Windows NT 5.1.2600 Service Pack 2" platform="Win32NT" cwd="C:\Program Files\NUnit 2.5.2\bin\net-2.0" machine-name="GRIMSBY" user="ba1224" user-domain="PHYSICS" />
+  <culture-info current-culture="en-GB" current-uiculture="en-US" />
+  <test-suite name="C:\PhD\code\misc\CalciteCsv\CalciteCsvNunitTesting\bin\Debug\CalciteCsvNunitTesting.dll" executed="True" success="True" time="0.219" asserts="0">
+    <results>
+      <test-suite name="CalciteCsvNunitTesting" executed="True" success="True" time="0.203" asserts="0">
+        <results>
+          <test-suite name="CsvReaderTest" executed="True" success="True" time="0.203" asserts="0">
+            <results>
+              <test-case name="CalciteCsvNunitTesting.CsvReaderTest.SplitLineTestBasic" executed="True" success="True" time="0.188" asserts="1" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

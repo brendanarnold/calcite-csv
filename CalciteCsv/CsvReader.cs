@@ -206,12 +206,13 @@ namespace CalciteCsv
             this._Stream.ReadLine();
         }
 
+        // TODO: Make 'internal' when discover how to allow NUnit access
         /// <summary>
         /// Parse the text string into a List of strings using the CsvSpec of the object
         /// </summary>
         /// <param name="line">Text to be parsed</param>
         /// <returns>List of strings</returns>
-        internal List<string> SplitLine(string line)
+        public List<string> SplitLine(string line)
         {
             int i;
             bool inQuotes = false;

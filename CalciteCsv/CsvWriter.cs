@@ -6,7 +6,7 @@ using System.IO;
 
 namespace CalciteCsv
 {
-    class CsvWriter : IDisposable
+    public class CsvWriter : IDisposable
     {
         /// <summary>
         /// The current CsvSpec that the writer is following
@@ -69,7 +69,8 @@ namespace CalciteCsv
             this.Columns.Clear();
         }
 
-        internal string JoinLine(List<string> columns)
+        // TODO: Make 'internal' when discover how to make NUnit access it
+        public string JoinLine(List<string> columns)
         {
             string line = String.Empty;
             // Check that we can work with the current CsvSpec
