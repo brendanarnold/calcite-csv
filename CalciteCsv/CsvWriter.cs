@@ -25,10 +25,6 @@ namespace CalciteCsv
         /// </summary>
         public List<string> Columns = new List<string>();
         /// <summary>
-        /// A comment string to be appended at the end of a row of data, erased after each write
-        /// </summary>
-        public string EndOfLineComment = String.Empty;
-        /// <summary>
         /// Returns the string representation of the assembled CSV file so far
         /// </summary>
         public string Output
@@ -54,15 +50,25 @@ namespace CalciteCsv
             // TODO: Implement writing of headers 
         }
 
+
         /// <summary>
         /// Write the cached column data to the file
         /// </summary>
         public void WriteColumnsLine()
         {
+            this.WriteColumnsLine(string.Empty);
+        }
+
+        /// <summary>
+        /// Write the cached column data to the file
+        /// </summary>
+        /// <param name="endOfLineComment">A commented string to append at the end of this row of data</param>
+        public void WriteColumnsLine(string endOfLineComment)
+        {
             string line = String.Empty;
             line = this.JoinLine(this.Columns);
             // Send off to generic text writing function for writing and reset the variables
-            this.WriteTextLine(line, false);
+            this._WriteTextLine(line, false, endOfLineComment);
             // Incremement the number of data lines
             this.DataRowCount = this.DataRowCount + 1;
             // Clear the cache
@@ -114,10 +120,45 @@ namespace CalciteCsv
         /// Write an arbitrary line to the file ignoring contents of Column
         /// </summary>
         /// <param name="comment">line to write</param>
-        /// <param name="isCommented">If true, the line(s) will be commented, false it will be written as is</param>
-        public void WriteTextLine(string line, bool isCommented) 
+        public void WriteTextLine(string line)
         {
-            // TODO: Write headers and units
+            this._WriteTextLine(line, false, String.Empty);
+        }
+
+        /// <summary>
+        /// Write an arbitrary line to the file ignoring contents of Column
+        /// </summary>
+        /// <param name="comment">line to write</param>
+        /// <param name="isCommented">If true, the line(s) will be commented, false it will be written as is</param>
+        public void WriteTextLine(string line, bool isCommented)
+        {
+            this._WriteTextLine(line, isCommented, String.Empty);
+        }
+
+        public void WriteTextLine(string line, string endOfLineComment)
+        {
+            this._WriteTextLine(line, false, endOfLineComment);
+        }
+
+        private void _WriteTextLine(string line, bool isCommented, string endOfLineComment)
+        {
+            // Write headers and units if required
+            if (this.IsHeaderLine(this.FileLineCount + 1))
+            {
+                this.__WriteTextLine(this.JoinLine(this.Spec.Headers), false, String.Empty);
+                this.FileLineCount = this.FileLineCount + 1;
+            }
+            else if (this.IsUnitsLine(this.FileLineCount + 1))
+            {
+                this.__WriteTextLine(this.JoinLine(this.Spec.Units), false, String.Empty);
+                this.FileLineCount = this.FileLineCount + 1;
+            }
+            // Finally write the line to the stream
+            this.__WriteTextLine(line, isCommented, endOfLineComment);
+        }
+
+        private void __WriteTextLine(string line, bool isCommented, string endOfLineComment) 
+        {
 
             // Prepend a comment string if necessary
             if (isCommented == true)
@@ -125,10 +166,9 @@ namespace CalciteCsv
                 line = this.Spec.CommentString + line;
             }
             // Add an end of line comment if specified
-            if (this.EndOfLineComment != String.Empty)
+            if (endOfLineComment != String.Empty)
             {
-                line = line + this.Spec.CommentString + this.EndOfLineComment;
-                this.EndOfLineComment = String.Empty;
+                line = line + this.Spec.CommentString + endOfLineComment;
             }
             // If a particular line delimiter is specified then use that to end the line, else use the system default
             if (this.Spec.LineDelimiter == String.Empty)
@@ -144,6 +184,51 @@ namespace CalciteCsv
             this.FileLineCount = this.FileLineCount + 1;
             
         }
+
+        private bool IsHeaderLine(int lineNum)
+        {
+            // 1st case: Headers specified but no row, write as first line in file
+            if (this.Spec.Headers.Count > 0 && this.Spec.HeaderRow == -1 && lineNum == 1) 
+            {
+                return true;
+            }
+            // 2nd case: Header row specified explicitly
+            else if (this.Spec.HeaderRow == lineNum)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool IsUnitsLine(int lineNum)
+        {
+            // 1st case: Units specified but no row, write on first line only if no headers due to go there
+            if (this.Spec.Units.Count > 0 && this.Spec.UnitsRow == -1 
+                && lineNum == 1 && this.IsHeaderLine(lineNum) == false) 
+            {
+                return true;
+            } 
+            // 2nd case: Units specified but no row, write on second line only if headers were due on first line
+            else if (this.Spec.Units.Count > 0 && this.Spec.UnitsRow == -1 
+                && lineNum == 2 && this.IsHeaderLine(lineNum - 1) == true)
+            {
+                return true;
+            } 
+            // 3rd case: Units row specified explicitly
+            else if (this.Spec.UnitsRow == lineNum)
+            {
+                return true;
+            } 
+            else 
+            {
+                return false;
+            }
+        }
+
+        
         
         /// <summary>
         /// Finish writing to the stream
@@ -153,6 +238,7 @@ namespace CalciteCsv
             this._Stream.Close();
         }
 
+        
 
         #region IDisposable Members
 

@@ -47,6 +47,7 @@ namespace CalciteCsv
                     break;
                 case "FixedWidthFile":
                     this.IsFixedWidth = true;
+                    this.ColumnDelimiter = " ";
                     this.CommentString = "#";
                     break;
                 default:

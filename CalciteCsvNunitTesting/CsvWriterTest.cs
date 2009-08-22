@@ -55,7 +55,7 @@ namespace CalciteCsvNunitTesting
             string expected = "foo\tbar\tflim" + System.Environment.NewLine
                 + "0.1\t0e-5\t0.0" + System.Environment.NewLine
                 + "#Some commented text" + System.Environment.NewLine
-                + "Some uncommented text";
+                + "Some uncommented text" + System.Environment.NewLine;
             Assert.AreEqual(expected, actual, "CsvWriter does not generate expected string");
             stringTarget.EndWriting();
 

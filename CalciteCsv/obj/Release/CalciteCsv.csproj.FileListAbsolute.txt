@@ -8,3 +8,8 @@ C:\PhD\code\misc\CalciteCsv\CalciteCsv\bin\Release\CalciteCsv.pdb
 C:\PhD\code\misc\CalciteCsv\CalciteCsv\obj\Release\ResolveAssemblyReference.cache
 C:\PhD\code\misc\CalciteCsv\CalciteCsv\obj\Release\CalciteCsv.dll
 C:\PhD\code\misc\CalciteCsv\CalciteCsv\obj\Release\CalciteCsv.pdb
+C:\PhD\Code\Misc\Working-CalciteCsv\CalciteCsv\obj\Release\ResolveAssemblyReference.cache
+C:\PhD\Code\Misc\Working-CalciteCsv\CalciteCsv\obj\Release\CalciteCsv.dll
+C:\PhD\Code\Misc\Working-CalciteCsv\CalciteCsv\bin\Release\CalciteCsv.dll
+C:\PhD\Code\Misc\Working-CalciteCsv\CalciteCsv\bin\Release\CalciteCsv.pdb
+C:\PhD\Code\Misc\Working-CalciteCsv\CalciteCsv\obj\Release\CalciteCsv.pdb
