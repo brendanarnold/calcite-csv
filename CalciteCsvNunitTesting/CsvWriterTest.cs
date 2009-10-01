@@ -40,6 +40,7 @@ namespace CalciteCsvNunitTesting
         [Test]
         public void OutputTest()
         {
+            // TODO: Modify to include end of line comment testing
             CsvSpec spec = new CsvSpec(CsvTypes.TabSeperatedFile);
             spec.Headers.AddRange(new List<string>() { "foo", "bar", "flim" });
             spec.ColumnDelimiter = "\t";
